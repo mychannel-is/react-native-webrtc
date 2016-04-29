@@ -157,8 +157,7 @@ RCT_EXPORT_METHOD(mediaStreamRelease:(nonnull NSNumber *)streamID)
 - (RTCMediaConstraints *)defaultMediaStreamConstraints {
     NSArray *mandatoryConstraints = @[
                                       [[RTCPair alloc] initWithKey:@"maxHeight" value:@"320"],
-                                      [[RTCPair alloc] initWithKey:@"maxWidth" value:@"240"],
-                                      [[RTCPair alloc] initWithKey:@"maxFrameRate" value:@"24"]
+                                      [[RTCPair alloc] initWithKey:@"maxWidth" value:@"240"]
                                       ];
     RTCMediaConstraints* constraints =
     [[RTCMediaConstraints alloc]
