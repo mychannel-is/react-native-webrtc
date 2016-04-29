@@ -17,6 +17,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Iterator;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 
@@ -283,11 +285,6 @@ public class WebRTCModule extends ReactContextBaseJavaModule {
             ReadableType type = constraints.getType("video");
             VideoSource videoSource = null;
             MediaConstraints videoConstraints = new MediaConstraints();
-            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxHeight", Integer.toString(320)));
-            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxWidth", Integer.toString(240)));
-            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxFrameRate", Integer.toString(24)));
-            //does not like minFrameRate
-            //videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("minFrameRate", Integer.toString(5)));
             switch (type) {
                 case Boolean:
                     boolean useVideo = constraints.getBoolean("video");
@@ -305,8 +302,10 @@ public class WebRTCModule extends ReactContextBaseJavaModule {
                     break;
                 case Map:
                     ReadableMap useVideoMap = constraints.getMap("video");
-                    if (useVideoMap.hasKey("optional")) {
-                        if (useVideoMap.getType("optional") == ReadableType.Array) {
+                    ReadableMapKeySetIterator it = useVideoMap.keySetIterator();
+                    while (it.hasNextKey()) {
+                        String key = (String)it.nextKey();
+                        if( key.equals("optional") ){
                             ReadableArray options = useVideoMap.getArray("optional");
                             for (int i = 0; i < options.size(); i++) {
                                 if (options.getType(i) == ReadableType.Map) {
@@ -316,6 +315,8 @@ public class WebRTCModule extends ReactContextBaseJavaModule {
                                     }
                                 }
                             }
+                        }else{
+                            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair(key, useVideoMap.getString(key)));
                         }
                     }
                     break;
