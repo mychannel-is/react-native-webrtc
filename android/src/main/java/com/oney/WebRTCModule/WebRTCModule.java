@@ -283,6 +283,11 @@ public class WebRTCModule extends ReactContextBaseJavaModule {
             ReadableType type = constraints.getType("video");
             VideoSource videoSource = null;
             MediaConstraints videoConstraints = new MediaConstraints();
+            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxHeight", Integer.toString(320)));
+            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxWidth", Integer.toString(240)));
+            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxFrameRate", Integer.toString(24)));
+            //does not like minFrameRate
+            //videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("minFrameRate", Integer.toString(5)));
             switch (type) {
                 case Boolean:
                     boolean useVideo = constraints.getBoolean("video");
@@ -315,10 +320,6 @@ public class WebRTCModule extends ReactContextBaseJavaModule {
                     }
                     break;
             }
-            // videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxHeight", Integer.toString(100)));
-            // videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxWidth", Integer.toString(100)));
-            // videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxFrameRate", Integer.toString(10)));
-            // videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("minFrameRate", Integer.toString(10)));
 
             if (videoSource != null) {
                 VideoTrack videoTrack = mFactory.createVideoTrack("ARDAMSv0", videoSource);

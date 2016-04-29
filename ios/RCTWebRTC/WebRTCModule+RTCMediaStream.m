@@ -61,7 +61,7 @@
 RCT_EXPORT_METHOD(getUserMedia:(NSDictionary *)constraints callback:(RCTResponseSenderBlock)callback)
 {
   NSNumber *objectID = @(self.mediaStreamId++);
-  
+
   NSMutableArray *tracks = [NSMutableArray array];
 
   RTCMediaStream *mediaStream = [self.peerConnectionFactory mediaStreamWithLabel:@"ARDAMS"];
@@ -99,7 +99,7 @@ RCT_EXPORT_METHOD(getUserMedia:(NSDictionary *)constraints callback:(RCTResponse
         videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
       }
     }
-    
+
     if (videoDevice) {
       RTCVideoCapturer *capturer = [RTCVideoCapturer capturerWithDeviceName:[videoDevice localizedName]];
       RTCVideoSource *videoSource = [self.peerConnectionFactory videoSourceWithCapturer:capturer constraints:[self defaultMediaStreamConstraints]];
@@ -155,11 +155,16 @@ RCT_EXPORT_METHOD(mediaStreamRelease:(nonnull NSNumber *)streamID)
   }
 }
 - (RTCMediaConstraints *)defaultMediaStreamConstraints {
-  RTCMediaConstraints* constraints =
-  [[RTCMediaConstraints alloc]
-   initWithMandatoryConstraints:nil
-   optionalConstraints:nil];
-  return constraints;
+    NSArray *mandatoryConstraints = @[
+                                      [[RTCPair alloc] initWithKey:@"maxHeight" value:@"320"],
+                                      [[RTCPair alloc] initWithKey:@"maxWidth" value:@"240"],
+                                      [[RTCPair alloc] initWithKey:@"maxFrameRate" value:@"24"]
+                                      ];
+    RTCMediaConstraints* constraints =
+    [[RTCMediaConstraints alloc]
+     initWithMandatoryConstraints:mandatoryConstraints
+     optionalConstraints:nil];
+    return constraints;
 }
 
 @end
