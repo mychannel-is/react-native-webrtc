@@ -303,6 +303,7 @@ public class WebRTCModule extends ReactContextBaseJavaModule {
                 case Map:
                     ReadableMap useVideoMap = constraints.getMap("video");
                     ReadableMapKeySetIterator it = useVideoMap.keySetIterator();
+                    String sourceId = null;
                     while (it.hasNextKey()) {
                         String key = (String)it.nextKey();
                         if( key.equals("optional") ){
@@ -311,13 +312,18 @@ public class WebRTCModule extends ReactContextBaseJavaModule {
                                 if (options.getType(i) == ReadableType.Map) {
                                     ReadableMap option = options.getMap(i);
                                     if (option.hasKey("sourceId") && option.getType("sourceId") == ReadableType.String) {
-                                        videoSource = mFactory.createVideoSource(getVideoCapturerById(Integer.parseInt(option.getString("sourceId"))), videoConstraints);
+                                        sourceId = option.getString("sourceId");
                                     }
+                                }else{
+                                    //videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair(key, useVideoMap.getString(key)));
                                 }
                             }
                         }else{
                             videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair(key, useVideoMap.getString(key)));
                         }
+                    }
+                    if(sourceId != null){
+                        videoSource = mFactory.createVideoSource(getVideoCapturerById(Integer.parseInt(sourceId)), videoConstraints);
                     }
                     break;
             }
