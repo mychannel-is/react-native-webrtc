@@ -65,6 +65,8 @@ RCT_EXPORT_METHOD(getUserMedia:(NSDictionary *)constraints callback:(RCTResponse
   NSMutableArray *tracks = [NSMutableArray array];
 
   RTCMediaStream *mediaStream = [self.peerConnectionFactory mediaStreamWithLabel:@"ARDAMS"];
+    NSMutableArray *mandatoryConstraints = [NSMutableArray new];
+    RTCMediaConstraints *mediaStreamConstraints = [self defaultMediaStreamConstraints];
 
   if (constraints[@"audio"] && [constraints[@"audio"] boolValue]) {
     RTCAudioTrack *audioTrack = [self.peerConnectionFactory audioTrackWithID:@"ARDAMSa0"];
@@ -82,27 +84,36 @@ RCT_EXPORT_METHOD(getUserMedia:(NSDictionary *)constraints callback:(RCTResponse
         videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
       }
     } else if ([constraints[@"video"] isKindOfClass:[NSDictionary class]]) {
-      if (constraints[@"video"][@"optional"]) {
-        if ([constraints[@"video"][@"optional"] isKindOfClass:[NSArray class]]) {
-          NSArray *options = constraints[@"video"][@"optional"];
-          for (id item in options) {
-            if ([item isKindOfClass:[NSDictionary class]]) {
-              NSDictionary *dict = item;
-              if (dict[@"sourceId"]) {
-                videoDevice = [AVCaptureDevice deviceWithUniqueID:dict[@"sourceId"]];
+      NSDictionary *videoOptions = constraints[@"video"];
+        NSString *sourceId;
+      for(id key in videoOptions){
+          NSString *constraintValue = [videoOptions objectForKey:key];
+          if(key == @"optional"){
+              for (id item in constraintValue) {
+                  if ([item isKindOfClass:[NSDictionary class]]) {
+                      NSDictionary *dict = item;
+                      if (dict[@"sourceId"]) {
+                         sourceId = dict[@"sourceId"];
+                      }
+                  }
               }
-            }
+              
+          }else{
+              [mandatoryConstraints addObject:[[RTCPair alloc] initWithKey:key value:constraintValue]];
           }
+      }
+        
+        if(sourceId){
+            videoDevice = [AVCaptureDevice deviceWithUniqueID:sourceId];
         }
-      }
-      if (!videoDevice) {
-        videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-      }
+        if (!videoDevice) {
+            videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        }
     }
 
     if (videoDevice) {
       RTCVideoCapturer *capturer = [RTCVideoCapturer capturerWithDeviceName:[videoDevice localizedName]];
-      RTCVideoSource *videoSource = [self.peerConnectionFactory videoSourceWithCapturer:capturer constraints:[self defaultMediaStreamConstraints]];
+      RTCVideoSource *videoSource = [self.peerConnectionFactory videoSourceWithCapturer:capturer constraints:mediaStreamConstraints];
       RTCVideoTrack *videoTrack = [self.peerConnectionFactory videoTrackWithID:@"ARDAMSv0" source:videoSource];
       [mediaStream addVideoTrack:videoTrack];
       NSNumber *trackId = @(self.trackId++);
