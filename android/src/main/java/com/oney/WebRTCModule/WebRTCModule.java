@@ -319,7 +319,12 @@ public class WebRTCModule extends ReactContextBaseJavaModule {
                                 }
                             }
                         }else{
-                            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair(key, useVideoMap.getString(key)));
+                            try {
+                                videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair(key, useVideoMap.getString(key)));
+                            }
+                            catch (Exception e) {
+                                System.out.println("error adding key="+key);
+                            }
                         }
                     }
                     if(sourceId != null){

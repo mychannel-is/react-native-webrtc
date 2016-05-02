@@ -1,16 +1,55 @@
 {
-  "name": "react-native-webrtc",
-  "version": "0.6.2",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/oney/react-native-webrtc.git"
+  "_args": [
+    [
+      "react-native-webrtc@github:mychannel-is/react-native-webrtc",
+      "/Users/mgreer/clones/mychannel-conf"
+    ]
+  ],
+  "_from": "mychannel-is/react-native-webrtc",
+  "_id": "react-native-webrtc@0.6.2",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/react-native-webrtc",
+  "_phantomChildren": {},
+  "_requested": {
+    "hosted": {
+      "directUrl": "https://raw.githubusercontent.com/mychannel-is/react-native-webrtc/master/package.json",
+      "gitUrl": "git://github.com/mychannel-is/react-native-webrtc.git",
+      "httpsUrl": "git+https://github.com/mychannel-is/react-native-webrtc.git",
+      "shortcut": "github:mychannel-is/react-native-webrtc",
+      "ssh": "git@github.com:mychannel-is/react-native-webrtc.git",
+      "sshUrl": "git+ssh://git@github.com/mychannel-is/react-native-webrtc.git",
+      "type": "github"
+    },
+    "name": "react-native-webrtc",
+    "raw": "react-native-webrtc@github:mychannel-is/react-native-webrtc",
+    "rawSpec": "github:mychannel-is/react-native-webrtc",
+    "scope": null,
+    "spec": "github:mychannel-is/react-native-webrtc",
+    "type": "hosted"
   },
-  "nativePackage": true,
-  "description": "WebRTC for React Native",
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "git://github.com/mychannel-is/react-native-webrtc.git#07e10f0d1deaa47f62fc71686127da5be8c1c31f",
+  "_shasum": "a58db9a6fa91502a03db46427cf3107482ae5b01",
+  "_shrinkwrap": null,
+  "_spec": "react-native-webrtc@github:mychannel-is/react-native-webrtc",
+  "_where": "/Users/mgreer/clones/mychannel-conf",
   "author": {
-    "name": "Oney",
-    "email": "appdevoney@gmail.com"
+    "email": "appdevoney@gmail.com",
+    "name": "Oney"
   },
+  "bugs": {
+    "url": "https://github.com/oney/react-native-webrtc/issues"
+  },
+  "dependencies": {
+    "base64-js": "^1.1.2",
+    "event-target-shim": "^1.0.5"
+  },
+  "description": "WebRTC for React Native",
+  "devDependencies": {},
+  "gitHead": "07e10f0d1deaa47f62fc71686127da5be8c1c31f",
   "homepage": "https://github.com/oney/react-native-webrtc",
   "keywords": [
     "react-component",
@@ -19,14 +58,17 @@
     "android",
     "webrtc"
   ],
-  "dependencies": {
-    "base64-js": "^1.1.2",
-    "event-target-shim": "^1.0.5"
-  },
+  "name": "react-native-webrtc",
+  "nativePackage": true,
+  "optionalDependencies": {},
   "peerDependencies": {
     "react-native": ">=0.19.0"
   },
-  "bugs": {
-    "url": "https://github.com/oney/react-native-webrtc/issues"
-  }
+  "readme": "# react-native-webrtc\n\nA WebRTC module for React Native.\n\n## Support\n- Currently support for iOS and Android.  \n- Support video and audio communication. Not support DataChannel now.  \n- You can use it to build an iOS/Android app that can communicate with web browser.  \n- The WebRTC Library is based on [webrtc-build-scripts](https://github.com/pristineio/webrtc-build-scripts)\n\n## Installation\n\n- [iOS](https://github.com/oney/react-native-webrtc/blob/master/Documentation/iOSInstallation.md)\n- [Android](https://github.com/oney/react-native-webrtc/blob/master/Documentation/AndroidInstallation.md)\n\n## Usage\nNow, you can use WebRTC like in browser.\nIn your `index.ios.js`/`index.android.js`, you can require WebRTC to import RTCPeerConnection, RTCSessionDescription, etc.\n```javascript\nvar WebRTC = require('react-native-webrtc');\nvar {\n  RTCPeerConnection,\n  RTCMediaStream,\n  RTCIceCandidate,\n  RTCSessionDescription,\n  RTCView,\n  MediaStreamTrack,\n  getUserMedia,\n} = WebRTC;\n```\nAnything about using RTCPeerConnection, RTCSessionDescription and RTCIceCandidate is like browser.  \nSupport most WebRTC APIs, please see the [Document](https://developer.mozilla.org/zh-TW/docs/Web/API/RTCPeerConnection).\n```javascript\nvar configuration = {\"iceServers\": [{\"url\": \"stun:stun.l.google.com:19302\"}]};\nvar pc = new RTCPeerConnection(configuration);\nMediaStreamTrack.getSources(sourceInfos => {\n  var videoSourceId;\n  for (var i = 0; i < sourceInfos.length; i++) {\n    var sourceInfo = sourceInfos[i];\n    if(sourceInfo.kind == \"video\" && sourceInfo.facing == \"front\") {\n      videoSourceId = sourceInfo.id;\n    }\n  }\n  getUserMedia({\n    \"audio\": true,\n    \"video\": {\n      optional: [{sourceId: videoSourceId}]\n    }\n  }, function (stream) {\n    pc.addStream(stream);\n  }, logError);\n});\n\npc.createOffer(function(desc) {\n  pc.setLocalDescription(desc, function () {\n    // Send pc.localDescription to peer\n  }, function(e) {});\n}, function(e) {});\npc.onicecandidate = function (event) {\n  // send event.candidate to peer\n};\n// also support setRemoteDescription, createAnswer, addIceCandidate, onnegotiationneeded, oniceconnectionstatechange, onsignalingstatechange, onaddstream\n\n```\nHowever, render video stream should be used by React way.\n\nRendering RTCView.\n```javascript\nvar container;\nvar RCTWebRTCDemo = React.createClass({\n  getInitialState: function() {\n    return {videoURL: null};\n  },\n  componentDidMount: function() {\n    container = this;\n  },\n  render: function() {\n    return (\n      <View>\n        <RTCView streamURL={this.state.videoURL}/>\n      </View>\n    );\n  }\n});\n```\nAnd set stream to RTCView\n```javascript\ncontainer.setState({videoURL: stream.toURL()});\n```\n## Demo\nThe demo project is https://github.com/oney/RCTWebRTCDemo   \nAnd you will need a signaling server. I have written a signaling server https://react-native-webrtc.herokuapp.com/ (the repository is https://github.com/oney/react-native-webrtc-server).   \nYou can open this website in browser, and then set it as signaling server in the app, and run the app. After you enter the same room ID, the video stream will be connected.\n\n## Native control\nUse [react-native-incall-manager](https://github.com/zxcpoiu/react-native-incall-manager) to keep screen on, mute microphone, etc.\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oney/react-native-webrtc.git"
+  },
+  "version": "0.6.2"
 }
