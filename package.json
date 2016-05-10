@@ -1,32 +1,9 @@
 {
-  "_args": [
-    [
-      "react-native-webrtc@github:mychannel-is/react-native-webrtc",
-      "/Users/mgreer/clones/mychannel-conf"
-    ]
-  ],
-  "_from": "mychannel-is/react-native-webrtc",
-  "_id": "react-native-webrtc@0.6.2",
-  "_inCache": true,
-  "_installable": true,
-  "_location": "/react-native-webrtc",
-  "_phantomChildren": {},
-  "_requested": {
-    "hosted": {
-      "directUrl": "https://raw.githubusercontent.com/mychannel-is/react-native-webrtc/master/package.json",
-      "gitUrl": "git://github.com/mychannel-is/react-native-webrtc.git",
-      "httpsUrl": "git+https://github.com/mychannel-is/react-native-webrtc.git",
-      "shortcut": "github:mychannel-is/react-native-webrtc",
-      "ssh": "git@github.com:mychannel-is/react-native-webrtc.git",
-      "sshUrl": "git+ssh://git@github.com/mychannel-is/react-native-webrtc.git",
-      "type": "github"
-    },
-    "name": "react-native-webrtc",
-    "raw": "react-native-webrtc@github:mychannel-is/react-native-webrtc",
-    "rawSpec": "github:mychannel-is/react-native-webrtc",
-    "scope": null,
-    "spec": "github:mychannel-is/react-native-webrtc",
-    "type": "hosted"
+  "name": "react-native-webrtc",
+  "version": "0.7.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oney/react-native-webrtc.git"
   },
   "_requiredBy": [
     "/"
